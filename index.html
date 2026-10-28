@@ -21,6 +21,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+      // Suppress ambient HMR WebSocket errors in dev preview as HMR is disabled in AI Studio
+      window.addEventListener('error', function(event) {
+        if (event && event.message && (event.message.includes('WebSocket') || event.message.includes('vite'))) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event && event.reason && String(event.reason).includes('WebSocket')) {
+          event.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body class="bg-amber-50 text-slate-800 selection:bg-amber-300 selection:text-amber-900 overflow-x-hidden">
     <div id="root"></div>

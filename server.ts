@@ -1,5 +1,6 @@
 import express from 'express';
 import fs from 'fs';
+import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -132,11 +133,20 @@ app.get('/api/sync/all', (_req, res) => {
 // VITE DEV MIDDLEWARE OR PRODUCTION STATIC SERVING
 // ----------------------------------------------------
 async function startServer() {
+  const httpServer = http.createServer(app);
+
   if (!isProduction) {
     // Dynamic import of vite in dev mode
     const { createServer } = await import('vite');
+    const isHmrDisabled = process.env.DISABLE_HMR === 'true';
+
     const vite = await createServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        // If HMR is disabled in AI Studio, set hmr: false so client does not attempt WebSocket connections.
+        // Otherwise, attach HMR WebSocket server directly to httpServer to prevent closed-without-open errors.
+        hmr: isHmrDisabled ? false : { server: httpServer },
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -149,7 +159,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Maths Adventure server running at http://0.0.0.0:${PORT} [${isProduction ? 'production' : 'development'}]`);
   });
 }

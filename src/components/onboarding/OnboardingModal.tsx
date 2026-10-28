@@ -98,9 +98,29 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ onComplete }) 
             <h2 className="text-2xl sm:text-4xl font-black text-indigo-950 font-heading">
               Welcome to Maths Adventure!
             </h2>
-            <p className="text-sm sm:text-base font-bold text-slate-600 max-w-md mx-auto">
-              “Learn Maths. Play Games. Become a Maths Hero!”
-            </p>
+            <div className="flex justify-center items-center gap-3 my-2">
+              <div className="w-16 h-20 rounded-xl overflow-hidden border-2 border-amber-300 shadow-md">
+                <img
+                  src="/assets/maths_heroes_cartoon.jpg"
+                  alt="Maths Adventure Cartoon Heroes"
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    if (!target.src.includes('maths_heroes_cartoon_1793189009498.jpg')) {
+                      target.src = '/src/assets/images/maths_heroes_cartoon_1793189009498.jpg';
+                    }
+                  }}
+                />
+              </div>
+              <div className="text-left">
+                <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full inline-block mb-0.5">
+                  🌟 The Maths Squad
+                </span>
+                <p className="text-xs font-bold text-slate-600 max-w-[240px]">
+                  Join our brave school heroes on a fun mathematical quest!
+                </p>
+              </div>
+            </div>
 
             <div className="pt-2">
               <p className="text-xs sm:text-sm font-black text-amber-900 mb-3 uppercase tracking-wide">
