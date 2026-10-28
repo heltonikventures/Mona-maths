@@ -1,0 +1,20 @@
+{
+  "test-player-1": {
+    "playerId": "test-player-1",
+    "playerName": "Milo",
+    "stats": {
+      "totalCorrect": 12,
+      "totalAnswered": 14
+    },
+    "level": 3,
+    "stars": 24,
+    "coins": 150,
+    "gems": 0,
+    "streak": 0,
+    "realmProgress": {},
+    "badges": [],
+    "clientTimestamp": "2026-10-28T06:33:18.302Z",
+    "serverTimestamp": "2026-10-28T06:33:18.302Z",
+    "lastSyncIp": "127.0.0.1"
+  }
+}

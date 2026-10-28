@@ -1,0 +1,6 @@
+{
+  "name": "Maths Adventure",
+  "description": "Fun, cartoon-style mathematics adventure game for children with addition, subtraction, multiplication, division, ratios, and percentages.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
