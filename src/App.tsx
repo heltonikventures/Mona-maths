@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AvatarShopModal } from './components/avatar/AvatarShopModal';
 import { Header } from './components/common/Header';
 import { OfflineIndicator } from './components/common/OfflineIndicator';
+import { PWAInstallButton } from './components/common/PWAInstallButton';
 import { DailyChallengeModal } from './components/daily/DailyChallengeModal';
 import { MathGameArena } from './components/game/MathGameArena';
 import { HomeScreenDashboard } from './components/home/HomeScreenDashboard';
@@ -10,6 +11,7 @@ import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { ParentTeacherModal } from './components/parent/ParentTeacherModal';
 import { ProgressDashboard } from './components/progress/ProgressDashboard';
 import { SettingsModal } from './components/settings/SettingsModal';
+import { MathsTricksModal } from './components/tricks/MathsTricksModal';
 import { AdventureWorldMap } from './components/world/AdventureWorldMap';
 import { GameProvider, useGame } from './context/GameContext';
 import { GameMode, MathTopic } from './types';
@@ -69,6 +71,7 @@ function MainApp() {
   const [showSettings, setShowSettings] = useState(false);
   const [showDaily, setShowDaily] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showTricks, setShowTricks] = useState(false);
   const [forceShowOnboarding, setForceShowOnboarding] = useState(false);
 
   const handleStartGame = (topic: MathTopic, mode: GameMode = 'adventure', levelIndex = 0) => {
@@ -115,6 +118,7 @@ function MainApp() {
             onOpenSettings={() => setShowSettings(true)}
             onOpenDaily={() => setShowDaily(true)}
             onOpenLeaderboard={() => setShowLeaderboard(true)}
+            onOpenTricks={() => setShowTricks(true)}
             onStartSpecific={(topic) => handleStartGame(topic, 'adventure', 0)}
           />
         )}
@@ -258,6 +262,14 @@ function MainApp() {
           </div>
         </div>
       )}
+
+      {/* Maths Magic Tricks Modal */}
+      {showTricks && (
+        <MathsTricksModal onClose={() => setShowTricks(false)} />
+      )}
+
+      {/* Always Accessible Floating Install Button for Mobile & Tablets */}
+      <PWAInstallButton variant="floating" />
     </div>
   );
 }

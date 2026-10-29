@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Child or student player profile and current adventure stats",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User ID" },
+        "name": { "type": "string", "description": "Player display name" },
+        "age": { "type": "number", "description": "Player age" },
+        "level": { "type": "number", "description": "Selected difficulty level 1-4" },
+        "stars": { "type": "number", "description": "Total stars collected" },
+        "coins": { "type": "number", "description": "Total coins earned" },
+        "streak": { "type": "number", "description": "Consecutive daily play streak" },
+        "avatar": { "type": "object", "description": "Custom avatar appearance configuration" },
+        "guideCharacter": { "type": "string", "description": "Selected companion character ID" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "stars", "coins"]
+    },
+    "PlayerProgress": {
+      "title": "PlayerProgress",
+      "description": "Progress and stars earned across each maths realm and level",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "realmId": { "type": "string" },
+        "levelsUnlocked": { "type": "number" },
+        "starsEarned": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "realmId", "levelsUnlocked"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Friendly public leaderboard entry for players",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "playerName": { "type": "string" },
+        "stars": { "type": "number" },
+        "streak": { "type": "number" },
+        "level": { "type": "number" },
+        "avatarIcon": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["playerName", "stars"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "entity": "UserProfile",
+      "description": "Collection of student player profiles"
+    },
+    "progress": {
+      "entity": "PlayerProgress",
+      "description": "Topic and level progression tracking"
+    },
+    "leaderboard": {
+      "entity": "LeaderboardEntry",
+      "description": "Public friendly stars leaderboard"
+    }
+  }
+}

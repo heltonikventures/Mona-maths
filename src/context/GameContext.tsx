@@ -19,6 +19,11 @@ import {
 import { fireCelebrationConfetti, fireStarBurst } from '../utils/confetti';
 import { soundManager } from '../utils/sound';
 import { syncManager, SyncPayload } from '../utils/syncManager';
+import {
+  ensureFirebaseAuth,
+  syncPlayerProfileToFirestore,
+  testFirebaseConnection,
+} from '../firebase';
 
 interface GameContextType {
   playerName: string;
@@ -296,7 +301,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('maths_classroom', JSON.stringify(classroom));
   }, [classroom]);
 
-  // Automatic Local Caching & Server Synchronization on internet detection
+  // Firebase Firestore Connection and Auth Bootstrap
+  useEffect(() => {
+    testFirebaseConnection();
+    ensureFirebaseAuth();
+  }, []);
+
+  // Automatic Local Caching, Offline Background Sync, and Cloud Firestore Sync
   useEffect(() => {
     let playerId = localStorage.getItem('maths_player_id');
     if (!playerId) {
@@ -318,8 +329,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clientTimestamp: new Date().toISOString(),
     };
 
+    // 1. Queue to offline service worker sync manager
     syncManager.queueStatsForSync(payload);
-  }, [stats, level, stars, coins, gems, streak, realmProgress, badges, playerName]);
+
+    // 2. Cloud Firestore Realtime Synchronization
+    syncPlayerProfileToFirestore({
+      id: playerId,
+      name: playerName,
+      level,
+      stars,
+      coins,
+      streak,
+      avatarIcon: avatar?.gender === 'girl' ? '👧' : avatar?.gender === 'robot' ? '🤖' : '👦',
+      lastUpdated: new Date().toISOString(),
+    });
+  }, [stats, level, stars, coins, gems, streak, realmProgress, badges, playerName, avatar]);
 
   useEffect(() => {
     localStorage.setItem('maths_settings', JSON.stringify(settings));

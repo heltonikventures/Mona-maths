@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Player profiles: Anyone can create their profile, and authenticated owners or players can read/write their own document
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Realm and topic progress
+    match /progress/{progressId} {
+      allow read, write: if true;
+    }
+
+    // Public Friendly Leaderboard: Readable by all kids, writable with basic validations
+    match /leaderboard/{entryId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchTopLeaderboard } from '../../firebase';
 import { soundManager } from '../../utils/sound';
 
 interface LeaderboardModalProps {
@@ -15,31 +16,62 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   playerStreak,
 }) => {
   const [category, setCategory] = useState<'stars' | 'improved' | 'streak' | 'champion'>('stars');
+  const [cloudLeaders, setCloudLeaders] = useState<Array<{ name: string; score: string; badge: string; isMe?: boolean }>>([]);
+  const [isCloudLoaded, setIsCloudLoaded] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchTopLeaderboard().then((entries) => {
+      if (!isMounted) return;
+      if (entries && entries.length > 0) {
+        const mapped = entries.map((e, idx) => ({
+          name: e.playerName === playerName ? `${playerName} (You)` : `${e.playerName} ${e.avatarIcon || '🌟'}`,
+          score: `${e.stars} Stars`,
+          badge: idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '🎖️',
+          isMe: e.playerName === playerName,
+        }));
+        // If current player isn't in top entries, inject them
+        if (!mapped.some(m => m.isMe)) {
+          mapped.push({
+            name: `${playerName} (You)`,
+            score: `${playerStars} Stars`,
+            badge: '⭐',
+            isMe: true,
+          });
+        }
+        setCloudLeaders(mapped);
+        setIsCloudLoaded(true);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [playerName, playerStars]);
 
   const friendlyLeaders = {
-    stars: [
-      { rank: 1, name: 'Maya ⭐', score: `${playerStars > 50 ? playerStars + 12 : 58} Stars`, badge: '🥇' },
-      { rank: 2, name: `${playerName} (You)`, score: `${playerStars} Stars`, badge: '🥈', isMe: true },
-      { rank: 3, name: 'Tobi ⚡', score: '44 Stars', badge: '🥉' },
-      { rank: 4, name: 'Emma 🦄', score: '38 Stars', badge: '🎖️' },
-      { rank: 5, name: 'Leo 🦁', score: '32 Stars', badge: '🎖️' },
+    stars: isCloudLoaded && cloudLeaders.length > 0 ? cloudLeaders : [
+      { name: 'Maya ⭐', score: `${playerStars > 50 ? playerStars + 12 : 58} Stars`, badge: '🥇' },
+      { name: `${playerName} (You)`, score: `${playerStars} Stars`, badge: '🥈', isMe: true },
+      { name: 'Tobi ⚡', score: '44 Stars', badge: '🥉' },
+      { name: 'Emma 🦄', score: '38 Stars', badge: '🎖️' },
+      { name: 'Leo 🦁', score: '32 Stars', badge: '🎖️' },
     ],
     improved: [
-      { rank: 1, name: 'Leo 🦁', score: '+45% Boost', badge: '🚀' },
-      { rank: 2, name: `${playerName} (You)`, score: '+35% Boost', badge: '⭐', isMe: true },
-      { rank: 3, name: 'Emma 🦄', score: '+28% Boost', badge: '✨' },
-      { rank: 4, name: 'Maya ⭐', score: '+22% Boost', badge: '🌟' },
+      { name: 'Leo 🦁', score: '+45% Boost', badge: '🚀' },
+      { name: `${playerName} (You)`, score: '+35% Boost', badge: '⭐', isMe: true },
+      { name: 'Emma 🦄', score: '+28% Boost', badge: '✨' },
+      { name: 'Maya ⭐', score: '+22% Boost', badge: '🌟' },
     ],
     streak: [
-      { rank: 1, name: 'Tobi ⚡', score: '9 Days Fire', badge: '🔥' },
-      { rank: 2, name: `${playerName} (You)`, score: `${playerStreak} Days Fire`, badge: '🔥', isMe: true },
-      { rank: 3, name: 'Maya ⭐', score: '5 Days Fire', badge: '🔥' },
-      { rank: 4, name: 'Alex 🚀', score: '4 Days Fire', badge: '🔥' },
+      { name: 'Tobi ⚡', score: '9 Days Fire', badge: '🔥' },
+      { name: `${playerName} (You)`, score: `${playerStreak} Days Fire`, badge: '🔥', isMe: true },
+      { name: 'Maya ⭐', score: '5 Days Fire', badge: '🔥' },
+      { name: 'Alex 🚀', score: '4 Days Fire', badge: '🔥' },
     ],
     champion: [
-      { rank: 1, name: `${playerName} (You)`, score: 'Maths Hero Title', badge: '👑', isMe: true },
-      { rank: 2, name: 'Maya ⭐', score: 'Island Master', badge: '🏆' },
-      { rank: 3, name: 'Tobi ⚡', score: 'Mountain Climber', badge: '🏆' },
+      { name: `${playerName} (You)`, score: 'Maths Hero Title', badge: '👑', isMe: true },
+      { name: 'Maya ⭐', score: 'Island Master', badge: '🏆' },
+      { name: 'Tobi ⚡', score: 'Mountain Climber', badge: '🏆' },
     ],
   };
 

@@ -5,6 +5,7 @@ import { fireStarBurst } from '../../utils/confetti';
 import { soundManager } from '../../utils/sound';
 import { AvatarRenderer } from '../avatar/AvatarRenderer';
 import { CharacterGuide } from '../common/CharacterGuide';
+import { PWAInstallButton } from '../common/PWAInstallButton';
 
 interface HomeScreenDashboardProps {
   playerName: string;
@@ -23,6 +24,7 @@ interface HomeScreenDashboardProps {
   onOpenSettings: () => void;
   onOpenDaily: () => void;
   onOpenLeaderboard: () => void;
+  onOpenTricks: () => void;
   onStartSpecific: (topic: MathTopic) => void;
 }
 
@@ -43,6 +45,7 @@ export const HomeScreenDashboard: React.FC<HomeScreenDashboardProps> = ({
   onOpenSettings,
   onOpenDaily,
   onOpenLeaderboard,
+  onOpenTricks,
   onStartSpecific,
 }) => {
   const currentDiff = DIFFICULTY_LEVELS.find((d) => d.level === level) || DIFFICULTY_LEVELS[1];
@@ -224,6 +227,11 @@ export const HomeScreenDashboard: React.FC<HomeScreenDashboardProps> = ({
             <span>PLAY MATHS ADVENTURE!</span>
           </button>
 
+          {/* VIBRANT & VERY VISIBLE CENTRAL INSTALLATION BUTTON */}
+          <div className="w-full">
+            <PWAInstallButton variant="center" />
+          </div>
+
           {/* Quick Menu Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
             <button
@@ -235,6 +243,18 @@ export const HomeScreenDashboard: React.FC<HomeScreenDashboardProps> = ({
             >
               <span className="text-2xl">🗺️</span>
               <span>ADVENTURE MAP</span>
+            </button>
+
+            {/* NEW: MATHS MAGIC TRICKS BUTTON */}
+            <button
+              onClick={() => {
+                soundManager.playSparkle();
+                onOpenTricks();
+              }}
+              className="btn-3d p-3.5 rounded-2xl bg-gradient-to-br from-fuchsia-500 via-pink-500 to-rose-500 text-white font-black text-sm flex flex-col items-center justify-center gap-1 shadow-md hover:brightness-105 active:scale-95 transition border-2 border-pink-200 animate-pulse"
+            >
+              <span className="text-2xl">✨</span>
+              <span>MATHS TRICKS</span>
             </button>
 
             <button
